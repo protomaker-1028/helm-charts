@@ -1,0 +1,7 @@
+environments:
+  dev:
+    values:
+      - environments/dev/default.yaml
+  prod:
+    values:
+      - environments/prod/default.yaml

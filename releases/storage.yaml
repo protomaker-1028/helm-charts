@@ -1,0 +1,25 @@
+repositories:
+  - name: openebs-internal
+    url: https://openebs.github.io/openebs
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: openebs-dynamic-localpv
+    url: https://openebs.github.io/dynamic-localpv-provisioner
+  - name: openebs-zfs
+    url: https://openebs.github.io/zfs-localpv
+  - name: openebs-lvm
+    url: https://openebs.github.io/lvm-localpv
+  - name: openebs-rawfile
+    url: https://openebs.github.io/rawfile-localpv
+  - name: openebs-mayastor
+    url: https://openebs.github.io/mayastor-extensions
+
+releases:
+  - name: openebs
+    namespace: storage
+    createNamespace: true
+    installed: true
+    chart: "../openebs"
+    values:
+      - "../openebs/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"

@@ -1,0 +1,10 @@
+lvm-localpv:
+  lvmNode:
+    kubeletDir: /var/lib/k0s/kubelet
+zfs-localpv:
+  zfsNode:
+    kubeletDir: /var/lib/k0s/kubelet
+mayastor:
+  csi:
+    node:
+      kubeletDir: /var/lib/k0s/kubelet

@@ -1,0 +1,12 @@
+apiVersion: k0s.k0sproject.io/v1beta1
+kind: ClusterConfig
+
+metadata:
+  name: k0s
+
+spec:
+  network:
+    kubeProxy:
+      mode: ipvs
+      ipvs:
+        strictARP: true

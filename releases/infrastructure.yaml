@@ -1,0 +1,23 @@
+repositories:
+  - name: etcd
+    url: https://charts.bitnami.com/bitnami
+  - name: apisix-ingress-controller
+    url: https://apache.github.io/apisix-helm-chart
+  - name: metallb
+    url: https://metallb.github.io/metallb
+
+releases:
+  - name: apisix
+    namespace: infrastructure
+    createNamespace: true
+    installed: true
+    chart: "../apisix"
+    values:
+      - "../apisix/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+  - name: metallb
+    namespace: infrastructure
+    createNamespace: true
+    chart: metallb/metallb
+    version: 0.15.3

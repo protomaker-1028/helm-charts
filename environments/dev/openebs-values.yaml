@@ -1,0 +1,28 @@
+lvm-localpv:
+  lvmNode:
+    kubeletDir: /var/lib/k0s/kubelet/
+zfs-localpv:
+  zfsNode:
+    kubeletDir: /var/lib/k0s/kubelet/
+mayastor:
+  csi:
+    node:
+      kubeletDir: /var/lib/k0s/kubelet/
+  etcd:
+    replicaCount: 1
+    
+localpv-provisioner:
+  hostpathClass:
+    isDefaultClass: true
+
+alloy:
+  enabled: false
+loki:
+  enabled: false
+  minio:
+    enabled: false
+
+engines:
+  replicated:
+    mayastor:
+      enabled: false

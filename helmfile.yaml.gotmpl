@@ -1,0 +1,20 @@
+bases:
+  - environments.yaml
+
+helmDefaults:
+  wait: true
+  createNamespace: true
+  kubeContext: k0s
+  atomic: true
+  timeout: 600
+
+# helmfile.yaml
+helmfiles:
+  - path: releases/infrastructure.yaml
+    values:
+    - {{ toYaml .Values | nindent 8 }}
+  - path: releases/storage.yaml
+    values:
+    - {{ toYaml .Values | nindent 8 }}
+  - path: releases/applications.yaml
+  - path: releases/monitoring.yaml

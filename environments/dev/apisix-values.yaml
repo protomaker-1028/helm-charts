@@ -1,0 +1,38 @@
+resources:
+  limits:
+    cpu: 100m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+  # Configuration for the APISIX Gateway Plane
+apisix:
+  replicaCount: 2
+  enableIPv6: false
+
+# Gateway Service Exposure
+service:
+  type: LoadBalancer # Options: LoadBalancer, NodePort, or ClusterIP
+  http:
+    enabled: true
+    containerPort: 9080
+    servicePort: 80
+  externalTrafficPolicy: Local
+  loadBalancerIP: 100.89.189.66   # optional but recommended for fixed IP
+
+# Internal etcd Configuration (Requires a default StorageClass)
+etcd:
+  replicaCount: 3
+  persistence:
+    enabled: true
+    size: 10Gi
+
+# Embedded Ingress Controller Configuration
+ingress-controller:
+  enabled: true
+  gatewayProxy:
+    createDefault: true
+  config:
+    apisix:
+      serviceNamespace: infrastructure
