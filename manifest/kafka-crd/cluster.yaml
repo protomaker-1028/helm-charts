@@ -1,0 +1,130 @@
+# kafka-cluster.yaml
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaNodePool
+metadata:
+  name: controller
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  replicas: 3
+  roles:
+    - controller
+  storage:
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        size: 20Gi
+        class: openebs-hostpath
+        kraftMetadata: shared
+        deleteClaim: false
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+    limits:
+      memory: 2Gi
+      cpu: 2000m
+  template:
+    pod:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  strimzi.io/name: kafka-cluster-controller
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaNodePool
+metadata:
+  name: broker
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  replicas: 3
+  roles:
+    - broker
+  storage:
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        size: 100Gi
+        class: openebs-hostpath
+        kraftMetadata: shared
+        deleteClaim: false
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 500m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
+  template:
+    pod:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  strimzi.io/name: kafka-cluster-broker
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: kafka.strimzi.io/v1
+kind: Kafka
+metadata:
+  name: kafka-cluster
+  namespace: kafka
+spec:
+  kafka:
+    version: 4.2.0
+    metadataVersion: 4.2-IV1
+    
+    listeners:
+      - name: tls
+        port: 9093
+        type: internal
+        tls: false
+        authentication:
+          type: scram-sha-512
+      - name: external
+        # Expose Kafka with SASL_PLAINTEXT on the standard client port.
+        port: 9092
+        type: cluster-ip
+        tls: false
+        authentication:
+          type: scram-sha-512
+    
+    authorization:
+      type: simple
+    
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      num.partitions: 12
+      log.retention.hours: 168
+    
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: kafka-metrics
+          key: kafka-metrics-config.yml
+
+  entityOperator:
+    topicOperator:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+    userOperator:
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m

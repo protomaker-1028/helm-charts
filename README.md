@@ -20,6 +20,8 @@ Add this repository to your Helm configuration:
 ```bash
 helm repo add protomaker https://github.com/protomaker-1028/helm-charts
 helm repo update
+helm pull xxxxxx --untar --untardir dir/xxxxxx
+helm pull oci://ghcr.io/traefik/helm/traefik --untar --untardir traxfix
 ```
 
 ## Charts

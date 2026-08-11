@@ -1,0 +1,23 @@
+ingressRoute:
+  dashboard:
+    enabled: true
+
+ports:
+  kafka:
+    port: 9092
+    expose:
+      default: true
+    exposedPort: 9092
+    protocol: TCP
+
+providers:
+  kubernetesCRD:
+    enabled: true
+  kubernetesIngress:
+    enabled: true
+    publishedService:
+      enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer

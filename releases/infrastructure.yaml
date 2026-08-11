@@ -5,12 +5,20 @@ repositories:
     url: https://apache.github.io/apisix-helm-chart
   - name: metallb
     url: https://metallb.github.io/metallb
+  - name: strimzi
+    url: https://strimzi.io/charts/
+  - name: kafka-ui
+    url: https://provectus.github.io/kafka-ui-charts
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+  - name: traefik
+    url: https://traefik.github.io/charts
 
 releases:
   - name: apisix
     namespace: infrastructure
     createNamespace: true
-    installed: true
+    installed: false
     chart: "../apisix"
     values:
       - "../apisix/values.yaml"
@@ -19,5 +27,66 @@ releases:
   - name: metallb
     namespace: infrastructure
     createNamespace: true
+    installed: true
     chart: metallb/metallb
     version: 0.15.3
+
+  - name: kafka
+    namespace: kafka
+    createNamespace: true
+    installed: true
+    chart: strimzi/strimzi-kafka-operator
+    # version: "0.30.0" # Optional: pin to a specific version
+    values:
+      - "../{{ .Release.Name }}/strimzi-kafka-operator/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+  - name: kafka-ui
+    namespace: kafka
+    chart: kafka-ui/kafka-ui
+    installed: true
+    needs:
+      - kafka
+    values:
+      - envs:
+          config:
+            # Serve Kafka UI under a sub-path so asset links resolve under /kafka-ui
+            SPRING_WEBFLUX_BASE_PATH: "/kafka-ui"
+            SERVER_SERVLET_CONTEXT_PATH: "/kafka-ui"
+      # - "../{{ .Release.Name }}/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+        
+  # Network debugging pod for testing connectivity to other services in the cluster
+  - name: netshoot
+    namespace: infrastructure
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - resources:
+          - apiVersion: v1
+            kind: Pod
+            metadata:
+              name: netshoot
+            spec:
+              containers:
+                - name: netshoot
+                  image: nicolaka/netshoot:latest
+                  command:
+                    - sleep
+                    - "infinity"
+                  securityContext:
+                    capabilities:
+                      add:
+                        - NET_ADMIN
+                        - NET_RAW
+      # - "../{{ .Release.Name }}/values.yaml"
+      # - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+  - name: traefik
+    namespace: traefik
+    chart: traefik/traefik
+    version: 41.1.0
+    createNamespace: true
+    values:
+      - "../{{ .Release.Name }}/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"

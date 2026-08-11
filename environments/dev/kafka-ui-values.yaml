@@ -1,0 +1,7 @@
+watchAnyNamespace: true
+
+# 1. Enable dynamic configuration via environment variables
+envs:
+  config:
+    DYNAMIC_CONFIG_ENABLED: "true"
+

@@ -17,4 +17,8 @@ helmfiles:
     values:
     - {{ toYaml .Values | nindent 8 }}
   - path: releases/applications.yaml
+    values:
+    - {{ toYaml .Values | nindent 8 }}
   - path: releases/monitoring.yaml
+    values:
+    - {{ toYaml .Values | nindent 8 }}
