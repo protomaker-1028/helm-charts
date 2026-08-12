@@ -13,6 +13,8 @@ repositories:
     url: https://bedag.github.io/helm-charts/
   - name: traefik
     url: https://traefik.github.io/charts
+  - name: openfga
+    url: https://openfga.github.io/helm-charts
 
 releases:
   - name: apisix
@@ -86,6 +88,16 @@ releases:
     namespace: traefik
     chart: traefik/traefik
     version: 41.1.0
+    createNamespace: true
+    values:
+      - "../{{ .Release.Name }}/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+
+  - name: openfga
+    namespace: openfga
+    chart: openfga/openfga
+    version: 0.3.12
     createNamespace: true
     values:
       - "../{{ .Release.Name }}/values.yaml"

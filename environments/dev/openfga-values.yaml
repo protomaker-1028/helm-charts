@@ -1,0 +1,9 @@
+datastore:
+  engine: postgres
+  existingSecret: openfga-postgres-secret
+  secretKeys:
+    uriKey: uri
+    usernameKey: username
+    passwordKey: password
+  applyMigrations: true
+  waitForMigrations: true
