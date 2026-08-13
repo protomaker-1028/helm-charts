@@ -1,0 +1,41 @@
+namespaceOverride: keycloak
+
+database:
+  # don't create secret for db password. Instead use existing k8s secret
+  # existingSecret: "my-existent-dbpass-secret"
+  # existingSecretKey: "password"
+  existingSecret: "keycloak-db-secret"
+  existingSecretKey: "password"
+  # E.g. dev-file, dev-mem, mariadb, mssql, mysql, oracle or postgres
+  vendor: postgres
+  hostname: "ec2-dev.protomakers.io"
+  port: 5432
+  database: keycloak
+  username: postgres
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+  # The scaling policy to use. This will scale up quickly but only scale down a single Pod per 5 minutes.
+  # This is important because caches are usually only replicated to 2 Pods and if one of those Pods is terminated this will give the cluster time to recover.
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 300
+
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "start"
+  - "--http-port=8080"
+  - "--hostname-strict=false"

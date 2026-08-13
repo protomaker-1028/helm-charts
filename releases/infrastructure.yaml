@@ -15,6 +15,8 @@ repositories:
     url: https://traefik.github.io/charts
   - name: openfga
     url: https://openfga.github.io/helm-charts
+  - name: codecentric
+    url: https://codecentric.github.io/helm-charts
 
 releases:
   - name: apisix
@@ -93,11 +95,19 @@ releases:
       - "../{{ .Release.Name }}/values.yaml"
       - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
 
-
   - name: openfga
     namespace: openfga
     chart: openfga/openfga
     version: 0.3.12
+    createNamespace: true
+    values:
+      - "../{{ .Release.Name }}/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+  - name: keycloakx
+    namespace: keycloak
+    chart: codecentric/keycloakx
+    version: 7.2.2
     createNamespace: true
     values:
       - "../{{ .Release.Name }}/values.yaml"
