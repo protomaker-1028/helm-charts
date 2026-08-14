@@ -7,3 +7,10 @@ datastore:
     passwordKey: password
   applyMigrations: true
   waitForMigrations: true
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
