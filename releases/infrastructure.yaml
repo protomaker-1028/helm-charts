@@ -17,6 +17,8 @@ repositories:
     url: https://openfga.github.io/helm-charts
   - name: codecentric
     url: https://codecentric.github.io/helm-charts
+  - name: mongodb
+    url: https://mongodb.github.io/helm-charts
 
 releases:
   - name: apisix
@@ -112,3 +114,29 @@ releases:
     values:
       - "../{{ .Release.Name }}/values.yaml"
       - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+  - name: mongodb-operator
+    namespace: mongodb
+    createNamespace: true
+    chart: mongodb/community-operator
+    version: 0.13.0 # Specify preferred version or omit for latest
+    wait: true
+    timeout: 300
+    installed: true
+    values:
+      # Automatically install required Custom Resource Definitions (CRDs)
+      - community-operator-crds:
+        enabled: true
+
+        # Configure operator scoping
+        operator:
+          # Set to "*" to watch all namespaces, or leave default/commented for single-namespace scope
+          # watchNamespace: "*"
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 200m
+              memory: 128Mi

@@ -1,0 +1,52 @@
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb-community
+  namespace: mongodb
+spec:
+  version: "8.0.0"
+  type: ReplicaSet
+  members: 3
+  security:
+    tls:
+      enabled: false
+      certificateKeySecretRef:
+        name: mongodb-tls-cert
+      caConfigMapRef:
+        name: mongodb-ca
+    authentication:
+      ignoreUnknownUsers: true
+      modes:
+        - SCRAM
+  agent:
+    logLevel: DEBUG
+  statefulSet:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mongod
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+                requests:
+                  cpu: "1"
+                  memory: 1Gi
+            - name: mongodb-agent
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: 512Mi
+                requests:
+                  cpu: "0.5"
+                  memory: 256Mi
+  users:
+    - name: mdb-admin
+      db: admin
+      passwordSecretRef:
+        name: mdb-admin-user-password
+      scramCredentialsSecretName: mdb-admin-user
+      roles:
+        - name: root
+          db: admin

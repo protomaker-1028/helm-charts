@@ -3,12 +3,24 @@ ingressRoute:
     enabled: true
 
 ports:
+  # ----------------------------------------------------------------------------
+  # Dedicated Kafka TCP Entrypoint
+  # ----------------------------------------------------------------------------
   kafka:
     port: 9092
     expose:
       default: true
     exposedPort: 9092
     protocol: TCP
+  # ----------------------------------------------------------------------------
+  # Dedicated MongoDB TCP Entrypoint
+  # ----------------------------------------------------------------------------
+  mongodb:
+    port: 27017            # Internal port Traefik container listens on
+    exposedPort: 27017     # External port exposed on the Kubernetes Service
+    protocol: TCP
+    expose:
+      default: true        # Expose on LoadBalancer / NodePort service
 
 providers:
   kubernetesCRD:
