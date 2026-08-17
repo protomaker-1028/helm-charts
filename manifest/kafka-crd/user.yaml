@@ -9,4 +9,50 @@ metadata:
 spec:
   authentication:
     type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: "*"
+          patternType: literal
+        operations:
+          - Read
+          - Describe
+          - Create
+          - Write
+          - Delete
+          - Alter
 ---
+# kafka-user.yaml
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  name: form-service
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: "*"
+          patternType: literal
+        operations:
+          - Read
+          - Describe
+          - Create
+          - Write
+      - resource:
+          type: group
+          name: form-service-group
+          patternType: literal
+        operations:
+          - Read
+          - Describe
+          - Create
+          - Write

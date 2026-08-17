@@ -91,13 +91,26 @@ spec:
         authentication:
           type: scram-sha-512
       - name: external
-        # Expose Kafka with SASL_PLAINTEXT on the standard client port.
-        port: 9092
+        port: 9094
         type: cluster-ip
-        tls: false
+        tls: true
         authentication:
           type: scram-sha-512
-    
+        configuration:
+          bootstrap:
+            alternativeNames:
+              - kafka-bootstrap.protomakerlab.tail37e3dd.ts.net
+          brokers:
+            - broker: 0
+              advertisedHost: kafka-broker-0.protomakerlab.tail37e3dd.ts.net
+              advertisedPort: 9094
+            - broker: 1
+              advertisedHost: kafka-broker-1.protomakerlab.tail37e3dd.ts.net
+              advertisedPort: 9094
+            - broker: 2
+              advertisedHost: kafka-broker-2.protomakerlab.tail37e3dd.ts.net
+              advertisedPort: 9094
+
     authorization:
       type: simple
     

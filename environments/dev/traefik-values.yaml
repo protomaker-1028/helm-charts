@@ -7,10 +7,10 @@ ports:
   # Dedicated Kafka TCP Entrypoint
   # ----------------------------------------------------------------------------
   kafka:
-    port: 9092
+    port: 9094
     expose:
       default: true
-    exposedPort: 9092
+    exposedPort: 9094
     protocol: TCP
   # ----------------------------------------------------------------------------
   # Dedicated MongoDB TCP Entrypoint

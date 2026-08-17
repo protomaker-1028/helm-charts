@@ -26,7 +26,24 @@ spec:
   entryPoints:
     - kafka
   routes:
-    - match: HostSNI(`*`)
+    - match: HostSNI(`kafka-bootstrap.protomakerlab.tail37e3dd.ts.net`)
       services:
         - name: kafka-cluster-kafka-external-bootstrap
-          port: 9092
+          port: 9094
+
+    - match: HostSNI(`kafka-broker-0.protomakerlab.tail37e3dd.ts.net`)
+      services:
+        - name: kafka-cluster-broker-0
+          port: 9094
+          
+    - match: HostSNI(`kafka-broker-1.protomakerlab.tail37e3dd.ts.net`)
+      services:
+        - name: kafka-cluster-broker-1
+          port: 9094
+
+    - match: HostSNI(`kafka-broker-2.protomakerlab.tail37e3dd.ts.net`)
+      services:
+        - name: kafka-cluster-broker-2
+          port: 9094
+  tls:
+    passthrough: true
