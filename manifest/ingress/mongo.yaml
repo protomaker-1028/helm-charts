@@ -11,3 +11,16 @@ spec:
       services:
         - name: mongodb-community-svc
           port: 27017
+    # - match: HostSNI(`mongodb-community-0.protomakerlab.tail37e3dd.ts.net`)
+    #   services:
+    #     - name: mongo-node-0
+    #       port: 27017
+    # - match: HostSNI(`mongodb-community-1.protomakerlab.tail37e3dd.ts.net`)
+    #   services:
+    #     - name: mongo-node-1
+    #       port: 27017
+    # - match: HostSNI(`mongodb-community-2.protomakerlab.tail37e3dd.ts.net`)
+    #   services:
+    #     - name: mongo-node-2
+    #       port: 27017
+      

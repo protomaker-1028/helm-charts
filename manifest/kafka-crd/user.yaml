@@ -23,6 +23,15 @@ spec:
           - Write
           - Delete
           - Alter
+      - resource:
+          type: group
+          name: "*"
+          patternType: literal
+        operations:
+          - Read
+          - Write
+          - Describe
+          - Delete
 ---
 # kafka-user.yaml
 apiVersion: kafka.strimzi.io/v1

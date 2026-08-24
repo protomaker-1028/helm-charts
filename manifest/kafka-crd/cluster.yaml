@@ -21,11 +21,11 @@ spec:
         deleteClaim: false
   resources:
     requests:
-      memory: 1Gi
-      cpu: 500m
+      memory: 256Mi
+      cpu: 200m
     limits:
-      memory: 2Gi
-      cpu: 2000m
+      memory: 512Mi
+      cpu: 500m
   template:
     pod:
       affinity:
@@ -58,11 +58,11 @@ spec:
         deleteClaim: false
   resources:
     requests:
-      memory: 2Gi
-      cpu: 500m
+      memory: 256Mi
+      cpu: 200m
     limits:
-      memory: 4Gi
-      cpu: 2000m
+      memory: 512Mi
+      cpu: 500m
   template:
     pod:
       affinity:
@@ -115,10 +115,10 @@ spec:
       type: simple
     
     config:
-      offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
+      offsets.topic.replication.factor: 2
+      transaction.state.log.replication.factor: 2
       transaction.state.log.min.isr: 2
-      default.replication.factor: 3
+      default.replication.factor: 2
       min.insync.replicas: 2
       num.partitions: 12
       log.retention.hours: 168
@@ -141,3 +141,5 @@ spec:
         requests:
           memory: 256Mi
           cpu: 100m
+  
+  cruiseControl: {}

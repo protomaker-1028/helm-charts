@@ -14,7 +14,7 @@ database:
   username: postgres
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
   maxReplicas: 2
   metrics:
@@ -39,3 +39,12 @@ command:
   - "start"
   - "--http-port=8080"
   - "--hostname-strict=false"
+
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1024Mi"

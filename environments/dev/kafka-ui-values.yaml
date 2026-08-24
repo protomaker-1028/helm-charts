@@ -4,3 +4,7 @@ watchAnyNamespace: true
 envs:
   config:
     DYNAMIC_CONFIG_ENABLED: "true"
+
+yamlApplicationConfigConfigMap:
+  name: kafka-ui-config
+  keyName: config.yml

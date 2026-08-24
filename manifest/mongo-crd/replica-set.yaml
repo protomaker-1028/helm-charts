@@ -6,14 +6,16 @@ metadata:
 spec:
   version: "8.0.0"
   type: ReplicaSet
-  members: 3
+  members: 1
+  # replicaSetHorizons:
+  #   - external: "mongodb-community-0.protomakerlab.tail37e3dd.ts.net:27017"
+  #   - external: "mongodb-community-1.protomakerlab.tail37e3dd.ts.net:27017"
+  #   - external: "mongodb-community-2.protomakerlab.tail37e3dd.ts.net:27017"
   security:
     tls:
       enabled: false
       certificateKeySecretRef:
         name: mongodb-tls-cert
-      caConfigMapRef:
-        name: mongodb-ca
     authentication:
       ignoreUnknownUsers: true
       modes:
