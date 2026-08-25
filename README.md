@@ -24,6 +24,20 @@ helm pull xxxxxx --untar --untardir dir/xxxxxx
 helm pull oci://ghcr.io/traefik/helm/traefik --untar --untardir traxfix
 ```
 
+### Fission
+
+Fission is deployed through Helmfile as the `fission-charts/fission-all` release
+in the `fission` namespace. Its CRDs must be installed before the Helm release:
+
+```bash
+kubectl create -k "github.com/fission/fission/crds/v1?ref=v1.27.0"
+helmfile -e dev sync
+```
+
+The release uses `ClusterIP` services. Change `serviceType` and
+`routerServiceType` in [releases/infrastructure.yaml](releases/infrastructure.yaml)
+to `NodePort` or `LoadBalancer` when external access is required.
+
 ## Charts
 
 | Chart | Description | Version |

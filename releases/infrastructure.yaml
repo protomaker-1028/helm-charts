@@ -19,6 +19,8 @@ repositories:
     url: https://codecentric.github.io/helm-charts
   - name: mongodb
     url: https://mongodb.github.io/helm-charts
+  - name: fission-charts
+    url: https://fission.github.io/fission-charts/
 
 releases:
   - name: apisix
@@ -41,7 +43,7 @@ releases:
     namespace: kafka
     createNamespace: true
     installed: true
-    chart: strimzi/strimzi-kafka-operator
+    chart: "../kafka/strimzi-kafka-operator"
     # version: "0.30.0" # Optional: pin to a specific version
     values:
       - "../{{ .Release.Name }}/strimzi-kafka-operator/values.yaml"
@@ -140,3 +142,15 @@ releases:
             requests:
               cpu: 200m
               memory: 128Mi
+
+  - name: fission
+    namespace: fission
+    createNamespace: true
+    installed: true
+    chart: fission-charts/fission-all
+    version: 1.27.0
+    values:
+      - serviceType: ClusterIP
+        routerServiceType: ClusterIP
+      - "../{{ .Release.Name }}/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"

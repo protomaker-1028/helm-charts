@@ -1,0 +1,92 @@
+{{- if .Values.mqt_keda.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtrigger-keda
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    svc: mqtrigger-keda
+    messagequeue: keda
+spec:
+  replicas: {{ dig "replicas" 1 (.Values.mqt_keda | default dict) }}
+  selector:
+    matchLabels:
+      svc: mqtrigger-keda
+      messagequeue: keda
+  template:
+    metadata:
+      labels:
+        svc: mqtrigger-keda
+        messagequeue: keda
+    spec:
+      containers:
+      - name:  mqtrigger-keda
+        image: {{ include "fission-bundleImage" . | quote }}
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        command: ["/fission-bundle"]
+        args: ["--mqt_keda", "--routerUrl", "http://router.{{ .Release.Namespace }}"]
+        env:
+        {{- include "leaderElection.envs" (dict "enabled" (dig "leaderElection" "enabled" false (.Values.mqt_keda | default dict))) | indent 8 }}
+        - name: DEBUG_ENV
+          value: {{ .Values.debugEnv | quote }}
+        # KEDA-managed connector deployments invoke functions through
+        # /fission-function/<ns>/<name>, which moved to the router's
+        # internal listener with GHSA-3g33-6vg6-27m8. The scalermanager
+        # uses ROUTER_INTERNAL_URL (when set) as HTTP_ENDPOINT for the
+        # connector deployments it creates. Note: upstream KEDA
+        # connector images do not currently sign their requests, so
+        # operators that enable the HMAC verifier on the router must
+        # build signing-aware connector images. See the comment on
+        # StartScalerManager in pkg/mqtrigger/scalermanager.go.
+        - name: ROUTER_INTERNAL_URL
+          value: "http://router-internal.{{ .Release.Namespace }}:{{ .Values.router.internalPort | default 8889 }}"
+        - name: CONNECTOR_IMAGE_PULL_POLICY
+          value: "{{ .Values.pullPolicy }}"
+        - name: KAFKA_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.kafka.image }}:{{ .Values.mqt_keda.connector_images.kafka.tag }}"
+        - name: RABBITMQ_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.rabbitmq.image }}:{{ .Values.mqt_keda.connector_images.rabbitmq.tag }}"
+        - name: AWS-KINESIS-STREAM_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.awskinesis.image }}:{{ .Values.mqt_keda.connector_images.awskinesis.tag }}"
+        - name: AWS-SQS-QUEUE_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.aws_sqs.image }}:{{ .Values.mqt_keda.connector_images.aws_sqs.tag }}"
+        - name: STAN_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.nats_steaming.image }}:{{ .Values.mqt_keda.connector_images.nats_steaming.tag }}"
+        - name: NATS-JETSTREAM_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.nats_jetstream.image }}:{{ .Values.mqt_keda.connector_images.nats_jetstream.tag }}"
+        - name: GCP-PUBSUB_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.gcp_pubsub.image }}:{{ .Values.mqt_keda.connector_images.gcp_pubsub.tag }}"
+        - name: REDIS_IMAGE
+          value: "{{ .Values.mqt_keda.connector_images.redis.image }}:{{ .Values.mqt_keda.connector_images.redis.tag }}"
+        {{- include "fission-resource-namespace.envs" . | indent 8 }}
+        {{- include "kube_client.envs" . | indent 8 }}
+        {{- include "opentelemtry.envs" . | indent 8 }}
+        {{- include "coverage.envs" . | indent 8 }}
+        resources:
+          {{- toYaml .Values.mqt_keda.resources | nindent 10 }}
+        {{- if .Values.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.terminationMessagePath }}
+        {{- end }}
+        {{- if .Values.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.terminationMessagePolicy }}
+        {{- end }}
+        {{- if .Values.coverage.enabled }}
+        volumeMounts:
+        {{- include "coverage.volumemount" . | indent 8 }}
+        {{- end }}
+      serviceAccountName: fission-keda
+      {{- if .Values.coverage.enabled }}
+      volumes:
+      {{- include "coverage.volume" . | indent 6 }}
+      {{- end }}
+{{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+{{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: 
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- if .Values.extraCoreComponentPodConfig }}
+{{ toYaml .Values.extraCoreComponentPodConfig | indent 6 -}}
+{{- end }}
+{{- end }}
