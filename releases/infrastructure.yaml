@@ -150,7 +150,5 @@ releases:
     chart: fission-charts/fission-all
     version: 1.27.0
     values:
-      - serviceType: ClusterIP
-        routerServiceType: ClusterIP
       - "../{{ .Release.Name }}/values.yaml"
       - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"

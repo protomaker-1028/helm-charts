@@ -1,0 +1,9 @@
+##
+serviceType: ClusterIP
+
+## routerServiceType to consider while creating Fission Router service.
+## For minikube, set this to NodePort, elsewhere use LoadBalancer or ClusterIP.
+##
+routerServiceType: ClusterIP
+
+
