@@ -58,7 +58,39 @@ spec:
           - Write
       - resource:
           type: group
-          name: form-service-group
+          name: cosmos-local.form-service.profile-sdk.system-events.worker
+          patternType: literal
+        operations:
+          - Read
+          - Describe
+          - Create
+          - Write
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  name: profile-service
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: "cosmos-system-event"
+          patternType: literal
+        operations:
+          - Read
+          - Describe
+          - Create
+          - Write
+      - resource:
+          type: group
+          name: profile-service-group
           patternType: literal
         operations:
           - Read
