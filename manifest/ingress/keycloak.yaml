@@ -1,10 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: keycloak-route
+  name: keycloak-ingress
   namespace: keycloak
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-traefik"
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+      - protomakerlab.tail37e3dd.ts.net
+      secretName: keycloak-tls-secret
   rules:
     - host: protomakerlab.tail37e3dd.ts.net
       http:
@@ -15,4 +21,4 @@ spec:
                 port:
                   number: 80
             path: /auth
-            pathType: Prefix
+            pathType: Prefix  

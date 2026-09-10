@@ -48,3 +48,13 @@ resources:
   limits:
     cpu: "500m"
     memory: "1024Mi"
+
+proxy:
+  enabled: true
+  mode: xforwarded
+  http:
+    enabled: true
+
+extraEnv: |
+  - name: KC_HOSTNAME
+    value: "protomakerlab.tail37e3dd.ts.net"

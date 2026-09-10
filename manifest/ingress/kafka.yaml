@@ -1,10 +1,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kafka-ui-route
+  name: kafka-ui-ingress
   namespace: kafka
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-traefik"
+
+    # Force Traefik to redirect HTTP entrypoints to HTTPS (websecure)
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+      - protomakerlab.tail37e3dd.ts.net
+      secretName: kafka-ui-tls-secret
   rules:
     - host: protomakerlab.tail37e3dd.ts.net
       http:

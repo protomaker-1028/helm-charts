@@ -152,3 +152,12 @@ releases:
     values:
       - "../{{ .Release.Name }}/values.yaml"
       - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
+
+  - name: cert-manager
+    namespace: cert-manager
+    createNamespace: true
+    chart: ../cert-manager
+    # version: 1.21.1
+    values:
+      - "../{{ .Release.Name }}/values.yaml"
+      - "../environments/{{ .Environment.Name }}/{{ .Release.Name }}-values.yaml"
